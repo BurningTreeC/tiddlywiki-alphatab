@@ -6,6 +6,7 @@ module-type: widget
 renders alphaTex notation to tabs
 
 \*/
+
 (function() {
 
 "use strict";
