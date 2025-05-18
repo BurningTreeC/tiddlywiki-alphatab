@@ -1,0 +1,19 @@
+{
+	"tiddlers": [
+		{
+			"file": "lib/alphatab.min.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/BTC/AlphaTab/lib/alphatab.js",
+				"module-type": "library"
+			}
+		},{
+			"file": "modules/widgets/tab.js",
+			"fields": {
+				"type": "application/javascript",
+				"title": "$:/plugins/BTC/AlphaTab/modules/widgets/tab.js
+				"module-type": "widget"
+			}
+		}
+	]
+}
