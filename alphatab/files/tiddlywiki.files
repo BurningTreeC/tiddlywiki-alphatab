@@ -1,14 +1,14 @@
 {
 	"tiddlers": [
 		{
-			"file": "lib/alphatab.min.js",
+			"file": "files/lib/alphatab.min.js",
 			"fields": {
 				"type": "application/javascript",
 				"title": "$:/plugins/BTC/AlphaTab/lib/alphatab.js",
 				"module-type": "library"
 			}
 		},{
-			"file": "modules/widgets/tab.js",
+			"file": "files/modules/widgets/tab.js",
 			"fields": {
 				"type": "application/javascript",
 				"title": "$:/plugins/BTC/AlphaTab/modules/widgets/tab.js
