@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/BTC/AlphaTab/modules/widgets/alphatab.js
+title: $:/plugins/BTC/AlphaTab/modules/widgets/tab.js
 type: application/javascript
 module-type: widget
 
