@@ -259,11 +259,11 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	}
 	var blobUrl = URL.createObjectURL(new Blob([uInt8Array],{type: "application/javascript"}));
 	var decodedSoundfontData = window.atob(soundFontText),
-		soundfontuInt8Array = new Uint8Array();
+		soundfontuInt8Array = new Uint8Array(decodedSoundfontData.length);
 	for (var j = 0; j < decodedSoundfontData.length; ++j) {
 		soundfontuInt8Array[j] = decodedSoundfontData.charCodeAt(j);
 	}
-	var soundFontBlobUrl = URL.createObjectURL(new Blob([soundfontuInt8Array],{type: "application/octet-stream"}));
+	var soundFontBlobUrl = URL.createObjectURL(new Blob([soundfontuInt8Array]));
 	
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
 		core: {
@@ -273,7 +273,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		},
 		player: {
 			enablePlayer: true,
-			soundFont: "https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.5.0/dist/soundfont/sonivox.sf2",//soundFontBlobUrl,
+			soundFont: soundFontBlobUrl,//"https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.5.0/dist/soundfont/sonivox.sf2",
 			enableUserInteraction: true
 		}
 	});
