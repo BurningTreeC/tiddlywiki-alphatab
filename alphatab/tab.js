@@ -258,12 +258,21 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		uInt8Array[i] = decodedData.charCodeAt(i);
 	}
 	var blobUrl = URL.createObjectURL(new Blob([uInt8Array],{type: "application/javascript"}));
-	var decodedSoundfontData = window.atob(soundFontText),
-		soundfontuInt8Array = new Uint8Array(decodedSoundfontData.length);
-	for (var j = 0; j < decodedSoundfontData.length; ++j) {
-		soundfontuInt8Array[j] = decodedSoundfontData.charCodeAt(j);
+
+	function hexToUint8Array(hex) {
+		var cleaned = hex.replace(/[^a-fA-F0-9]/g, ""); // Alle Leerzeichen, \n, etc. entfernen
+		var len = cleaned.length / 2;
+		var arr = new Uint8Array(len);
+		for (var i = 0; i < len; i++) {
+			arr[i] = parseInt(cleaned.substr(i * 2, 2), 16);
+		}
+		return arr;
 	}
-	var soundFontBlobUrl = URL.createObjectURL(new Blob([soundfontuInt8Array]));
+	var soundFontText = thisPluginTiddlers["$:/plugins/BTC/AlphaTab/soundfont"].text;
+	var soundFontArray = hexToUint8Array(soundFontText);
+	var soundFontBlobUrl = URL.createObjectURL(
+		new Blob([soundFontArray], { type: "audio/sf2" })
+	);
 	
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
 		core: {
