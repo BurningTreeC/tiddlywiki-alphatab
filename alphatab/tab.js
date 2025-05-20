@@ -65,7 +65,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.tabContentNode.appendChild(this.tabViewportNode);
 	this.tabMainNode = this.document.createElement("div");
 	this.tabMainNode.className = "at-main";
-	this.tabContentNode.appendChild(this.tabMainNode);
+	this.tabViewportNode.appendChild(this.tabMainNode);
 	// Controls
 	this.tabControlsNode = this.document.createElement("div");
 	this.tabControlsNode.className = "at-controls";
@@ -73,7 +73,6 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.tabControlsLeftNode = this.document.createElement("div");
 	this.tabControlsLeftNode.className = "at-controls-left";
 	this.tabControlsNode.appendChild(this.tabControlsLeftNode);
-	// ...
 	this.playerStopNode = this.document.createElement("a");
 	this.playerStopNode.className = "btn at-player-stop disabled";
 	this.tabControlsLeftNode.appendChild(this.playerStopNode);
@@ -210,7 +209,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	parent.insertBefore(this.trackTemplateNode,nextSibling);
 	this.trackNode = this.document.createElement("div");
 	this.trackNode.className = "at-track";
-	this.trackTemplateNode.appendChild(this.trackNode);
+	this.trackTemplateNode.content.appendChild(this.trackNode);
 	this.trackIconNode = this.document.createElement("div");
 	this.trackIconNode.className = "at-track-icon";
 	this.trackNode.appendChild(this.trackIconNode);
@@ -275,6 +274,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	);
 	
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
+		file: "https://www.alphatab.net/files/canon.gp",
 		core: {
 			useWorkers: true,
 			scriptFile: blobUrl,
@@ -282,14 +282,11 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		},
 		player: {
 			enablePlayer: true,
-			soundFont: soundFontBlobUrl,//"https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.5.0/dist/soundfont/sonivox.sf2",
-			enableUserInteraction: true
+			soundFont: soundFontBlobUrl,
+			enableUserInteraction: true,
+			scrollElement: self.generateSelector(self.tabViewportNode)
 		}
 	});
-
-	if(this.renderTiddler) {
-		this.api.tex(this.wiki.getTiddlerText(this.renderTiddler));
-	}
 
 	this.api.renderStarted.on(function() {
 		self.loadOverlayNode.style.display = "flex";
@@ -305,7 +302,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		trackItem.track = track;
 		trackItem.onclick = function(e) {
 			e.stopPropagation();
-			self.api.tex(self.wiki.getTiddlerText(track.name));
+			self.api.renderTracks([track]);
 		};
 		return trackItem;
 	}
@@ -333,8 +330,8 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	});
 
 	this.api.scoreLoaded.on(function(score) {
-		self.songTitleNode.innerText = score.title;
-		self.songArtistNode.innerText = score.artist;
+		self.tabWrapperNode.querySelector(".at-song-title").innerText = score.title;
+		self.tabWrapperNode.querySelector(".at-song-artist").innerText = score.artist;
 	});
 
 	var countIn = this.tabWrapperNode.querySelector(".at-controls .at-count-in");
@@ -445,6 +442,40 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	});
 
 	this.domNodes.push(this.tabWrapperNode);
+};
+
+TabWidget.prototype.getIndex = function(node) {
+	var i = 1;
+	var tagName = node.tagName;
+
+	while(node.previousSibling) {
+		node = node.previousSibling;
+		if(
+			node.nodeType === 1 &&
+			tagName.toLowerCase() === node.tagName.toLowerCase()
+		) {
+			i++;
+		}
+	}
+
+	return i;
+};
+
+TabWidget.prototype.generateSelector = function(context) {
+	var index, pathSelector = "", localName;
+
+	if(context === "null") throw "not a DOM reference";
+
+	index = this.getIndex(context);
+
+	while(context.tagName) {
+		pathSelector = context.localName + (pathSelector ? " > " + pathSelector : "");
+		context = context.parentNode;
+	}
+
+	pathSelector = pathSelector + ':nth-of-type(' + index + ')';
+	console.log(pathSelector);
+	return pathSelector;
 };
 
 /*
