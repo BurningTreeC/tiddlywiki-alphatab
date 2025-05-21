@@ -77,13 +77,13 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.playerStopNode.className = "btn at-player-stop disabled";
 	this.tabControlsLeftNode.appendChild(this.playerStopNode);
 	this.playerStepBackwardNode = this.document.createElement("i");
-	this.playerStepBackwardNode.className = "fas fa-step-backward";
+	this.playerStepBackwardNode.className = "lui lui-step-backward";
 	this.playerStopNode.appendChild(this.playerStepBackwardNode);
 	this.playerPauseNode = this.document.createElement("a");
 	this.playerPauseNode.className = "btn at-player-play-pause disabled";
 	this.tabControlsLeftNode.appendChild(this.playerPauseNode);
 	this.playerPlayNode = this.document.createElement("i");
-	this.playerPlayNode.className = "fas fa-play";
+	this.playerPlayNode.className = "lui lui-play";
 	this.playerPauseNode.appendChild(this.playerPlayNode);
 	this.playerProgressNode = this.document.createElement("span");
 	this.playerProgressNode.className = "at-player-progress";
@@ -113,31 +113,31 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.playerCountInNode.className = "btn toggle at-count-in";
 	this.tabControlsRightNode.appendChild(this.playerCountInNode);
 	this.playerCountInBtnNode = this.document.createElement("i");
-	this.playerCountInBtnNode.className = "fas fa-hourglass-half";
+	this.playerCountInBtnNode.className = "lui lui-hourglass-half";
 	this.playerCountInNode.appendChild(this.playerCountInBtnNode);
 	this.playerMetronomeNode = this.document.createElement("a");
 	this.playerMetronomeNode.className = "btn at-metronome";
 	this.tabControlsRightNode.appendChild(this.playerMetronomeNode);
 	this.playerMetronomeBtnNode = this.document.createElement("i");
-	this.playerMetronomeBtnNode.className = "fas fa-edit";
+	this.playerMetronomeBtnNode.className = "lui lui-edit";
 	this.playerMetronomeNode.appendChild(this.playerMetronomeBtnNode);
 	this.playerLoopNode = this.document.createElement("a");
 	this.playerLoopNode.className = "btn at-loop";
 	this.tabControlsRightNode.appendChild(this.playerLoopNode);
 	this.playerLoopBtnNode = this.document.createElement("i");
-	this.playerLoopBtnNode.className = "fas fa-retweet";
+	this.playerLoopBtnNode.className = "lui lui-retweet";
 	this.playerLoopNode.appendChild(this.playerLoopBtnNode);
 	this.playerPrintNode = this.document.createElement("a");
 	this.playerPrintNode.className = "btn at-print";
 	this.tabControlsRightNode.appendChild(this.playerPrintNode);
 	this.playerPrintBtnNode = this.document.createElement("i");
-	this.playerPrintBtnNode.className = "fas fa-print";
+	this.playerPrintBtnNode.className = "lui lui-print";
 	this.playerPrintNode.appendChild(this.playerPrintBtnNode);
 	this.playerZoomNode = this.document.createElement("div");
 	this.playerZoomNode.className = "at-zoom";
 	this.tabControlsRightNode.appendChild(this.playerZoomNode);
 	this.playerZoomSearchIconNode = this.document.createElement("i");
-	this.playerZoomSearchIconNode.className = "fas fa-search";
+	this.playerZoomSearchIconNode.className = "lui lui-search";
 	this.playerZoomNode.appendChild(this.playerZoomSearchIconNode);
 	this.playerZoomSelectNode = this.document.createElement("select");
 	this.playerZoomNode.appendChild(this.playerZoomSelectNode);
@@ -214,7 +214,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.trackIconNode.className = "at-track-icon";
 	this.trackNode.appendChild(this.trackIconNode);
 	this.guitarIconNode = this.document.createElement("i");
-	this.guitarIconNode.className = "fas fa-guitar";
+	this.guitarIconNode.className = "lui lui-guitar";
 	this.trackIconNode.appendChild(this.guitarIconNode);
 	this.trackDetailsNode = this.document.createElement("div");
 	this.trackDetailsNode.className = "at-track-details";
@@ -410,13 +410,13 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		stop.classList.remove("disabled");
 	});
 	this.api.playerStateChanged.on(function(e) {
-		var icon = playPause.querySelector("i.fas");
+		var icon = playPause.querySelector("i.lui");
 		if(e.state === alphaTab.synth.PlayerState.Playing) {
-			icon.classList.remove("fa-play");
-			icon.classList.add("fa-pause");
+			icon.classList.remove("lui-play");
+			icon.classList.add("lui-pause");
 		} else {
-			icon.classList.remove("fa-pause");
-			icon.classList.add("fa-play");
+			icon.classList.remove("lui-pause");
+			icon.classList.add("lui-play");
 		}
 	});
 
