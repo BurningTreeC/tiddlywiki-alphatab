@@ -46,7 +46,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.loadOverlayContentNode = this.document.createElement("div");
 	this.loadOverlayContentNode.className = "at-overlay-content";
 	this.loadOverlayNode.appendChild(this.loadOverlayContentNode);
-	this.loadOverLayContentTextNode = this.document.createTextNode("Music sheet is loading");
+	this.loadOverLayContentTextNode = this.document.createTextNode("Music sheet is loading (or not present)");
 	this.loadOverlayContentNode.appendChild(this.loadOverLayContentTextNode);
 	this.tabContentNode = this.document.createElement("div");
 	this.tabContentNode.className = "at-content";
@@ -302,7 +302,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
 		file: alphaTabFileBlobURL,
 		core: {
-			useWorkers: true,
+			useWorkers: false,
 			scriptFile: blobUrl,
 			tex: true
 		},
@@ -469,17 +469,15 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		}
 		songPosition.innerText = formatDuration(e.currentTime) + " / " + formatDuration(e.endTime);
 	});
-
-	this.domNodes.push(this.tabWrapperNode);
 };
 
-TabWidget.prototype.getIndex = function(node) {
+TabWidget.prototype.getSelectorIndex = function(node) {
 	var i = 1;
 	var tagName = node.tagName;
 
-	while(node.previousSibling) {
+	while (node.previousSibling) {
 		node = node.previousSibling;
-		if(
+		if (
 			node.nodeType === 1 &&
 			tagName.toLowerCase() === node.tagName.toLowerCase()
 		) {
@@ -490,21 +488,24 @@ TabWidget.prototype.getIndex = function(node) {
 	return i;
 };
 
-TabWidget.prototype.generateSelector = function(context) {
-	var index, pathSelector = "", localName;
-
-	if(context === "null") throw "not a DOM reference";
-
-	index = this.getIndex(context);
-
-	while(context.tagName) {
-		pathSelector = context.localName + (pathSelector ? " > " + pathSelector : "");
-		context = context.parentNode;
+TabWidget.prototype.generateSelector = function(node) {
+	if (!node || node === "null" || !node.tagName) {
+		throw "Not a valid DOM reference";
 	}
 
-	pathSelector = pathSelector + ':nth-of-type(' + index + ')';
-	console.log(pathSelector);
-	return pathSelector;
+	var path = [];
+
+	while (node && node.tagName) {
+		var index = this.getSelectorIndex(node);
+		var selector = node.localName.toLowerCase() + `:nth-of-type(${index})`;
+		path.unshift(selector);
+		node = node.parentNode;
+	}
+
+	var finalSelector = path.join(" > ");
+	console.log(finalSelector);
+	console.log(this.document.querySelectorAll(finalSelector));
+	return finalSelector;
 };
 
 /*
@@ -512,7 +513,11 @@ Compute the internal state of the widget
 */
 TabWidget.prototype.execute = function() {
 	this.renderTiddler = this.getAttribute("tiddler","");
-	this.makeChildWidgets();
+	//this.makeChildWidgets();
+};
+
+TabWidget.prototype.removeChildDomNodes = function() {
+	this.parentDomNode.replaceChildren();
 };
 
 /*
@@ -521,7 +526,9 @@ Selectively refreshes the widget if needed. Returns true if the widget or any of
 TabWidget.prototype.refresh = function(changedTiddlers) {
 	var changedAttributes = this.computeAttributes();
 	if(changedAttributes.renderTiddler || changedTiddlers[this.renderTiddler]) {
-		this.api.destroy();
+		if(this.api) {
+			this.api.stop();
+		}
 		this.refreshSelf();
 		return true;
 	}
