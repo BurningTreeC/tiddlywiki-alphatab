@@ -272,8 +272,35 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	var soundFontBlobUrl = URL.createObjectURL(
 		new Blob([soundFontArray], { type: "audio/sf2" })
 	);
+
+	var alphaTabFileTiddler = this.wiki.getTiddler(this.renderTiddler);
+	if(!alphaTabFileTiddler) {
+		return;
+	}
+	var alphaTabFileText = alphaTabFileTiddler.fields.text;
+	var alphaTabMime = alphaTabFileTiddler.fields.type;
+	var alphaTabFileBlobURL;
+
+	switch (alphaTabMime) {
+	case "application/octet-stream":
+		var alphaTabFileTextArray = hexToUint8Array(alphaTabFileText);
+		alphaTabFileBlobURL = URL.createObjectURL(
+			new Blob([alphaTabFileTextArray], { type: "application/octet-stream" })
+		);
+		break;
+	default:
+		var alphaTabFileuInt8Array = new Uint8Array(alphaTabFileText.length);
+		for (var j = 0; j < alphaTabFileText.length; ++j) {
+			alphaTabFileuInt8Array[j] = alphaTabFileText.charCodeAt(j);
+		}
+		alphaTabFileBlobURL = URL.createObjectURL(
+			new Blob([alphaTabFileuInt8Array], { type: "application/octet-stream" })
+		);
+		break;
+	}
 	
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
+		file: alphaTabFileBlobURL,
 		core: {
 			useWorkers: true,
 			scriptFile: blobUrl,
@@ -287,8 +314,8 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		}
 	});
 
-	var scoreuIntArray = hexToUint8Array(this.wiki.getTiddlerText(this.renderTiddler));
-	this.api.load(scoreuIntArray, [0]);
+	//var scoreuIntArray = hexToUint8Array(this.wiki.getTiddlerText(this.renderTiddler));
+	//this.api.load(scoreuIntArray,[0,1]);
 
 	this.api.renderStarted.on(function() {
 		self.loadOverlayNode.style.display = "flex";
@@ -494,6 +521,7 @@ Selectively refreshes the widget if needed. Returns true if the widget or any of
 TabWidget.prototype.refresh = function(changedTiddlers) {
 	var changedAttributes = this.computeAttributes();
 	if(changedAttributes.renderTiddler || changedTiddlers[this.renderTiddler]) {
+		this.api.destroy();
 		this.refreshSelf();
 		return true;
 	}
