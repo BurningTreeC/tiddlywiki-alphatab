@@ -303,7 +303,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 		file: alphaTabFileBlobURL,
 		core: {
 			useWorkers: false,
-			scriptFile: blobUrl,
+			//scriptFile: blobUrl,
 			tex: true
 		},
 		player: {
