@@ -250,7 +250,7 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	$tw.utils.evalSandboxed(alphaTabjs,context,"$:/plugins/BTC/AlphaTab/lib/alphatab.js",true);
 	//$tw.utils.evalSandboxed(soundFont,soundContext,"$:/plugins/BTC/AlphaTab/soundfont",true);
 	var alphaTabjsWorkers = thisPluginTiddlers["$:/plugins/BTC/AlphaTab/lib/alphatab.js"].text;
-	var soundFontText = thisPluginTiddlers["$:/plugins/BTC/AlphaTab/soundfont"].text;
+
 	var decodedData = alphaTabjsWorkers,
 		uInt8Array = new Uint8Array(decodedData.length);
 	for (var i = 0; i < decodedData.length; ++i) {
@@ -274,7 +274,6 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 	);
 	
 	this.api = new alphaTab.AlphaTabApi(this.tabMainNode,{
-		file: "https://www.alphatab.net/files/canon.gp",
 		core: {
 			useWorkers: true,
 			scriptFile: blobUrl,
@@ -287,6 +286,9 @@ TabWidget.prototype.render = function(parent,nextSibling) {
 			scrollElement: self.generateSelector(self.tabViewportNode)
 		}
 	});
+
+	var scoreuIntArray = hexToUint8Array(this.wiki.getTiddlerText(this.renderTiddler));
+	this.api.load(scoreuIntArray, [0]);
 
 	this.api.renderStarted.on(function() {
 		self.loadOverlayNode.style.display = "flex";
